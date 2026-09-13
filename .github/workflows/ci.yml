@@ -1,0 +1,31 @@
+name: PowerShell QA
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [powershell, pwsh]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run behavioral and integration tests
+        shell: ${{ matrix.shell }}
+        run: ./tests/Run-Tests.ps1
+      - name: Build synthetic demo report
+        shell: ${{ matrix.shell }}
+        run: |
+          & ./Invoke-SESupport.ps1 -Demo -OutputDirectory ./reports
+          if ($LASTEXITCODE -ne 1) { throw 'Demo should report findings and exit 1.' }
+          exit 0
+      - name: Upload synthetic report
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-report-${{ matrix.shell }}
+          path: reports/
+          retention-days: 7
