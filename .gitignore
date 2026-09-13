@@ -1,0 +1,6 @@
+reports/
+artifacts/
+*.log
+*.zip
+TestResults.xml
+.DS_Store
