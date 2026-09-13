@@ -205,3 +205,6 @@ try {
         Remove-Item -LiteralPath $resolved -Recurse -Force
     }
 }
+# Successful negative CLI tests intentionally leave a nonzero native exit code.
+# Reset it explicitly so host wrappers do not mistake expected failures for test failure.
+exit 0
