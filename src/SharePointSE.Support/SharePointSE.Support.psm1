@@ -183,8 +183,11 @@ function Find-SECorrelation {
     foreach ($logPath in $Path) {
         $file = Get-Item -LiteralPath $logPath -ErrorAction Stop
         if ($file.PSIsContainer -or $file.Length -gt ($MaxFileSizeMB * 1MB)) { throw "Not a file or exceeds size limit: $logPath" }
-        $reader = New-Object System.IO.StreamReader($file.FullName)
+        # ULS keeps the active log open for writing and may rotate it during triage.
+        $stream = [IO.File]::Open($file.FullName, [IO.FileMode]::Open, [IO.FileAccess]::Read, ([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete))
+        $reader = $null
         try {
+            $reader = New-Object System.IO.StreamReader($stream)
             $lineNumber = 0
             while ($null -ne ($line = $reader.ReadLine())) {
                 $lineNumber++
@@ -194,7 +197,9 @@ function Find-SECorrelation {
                     if ($count -ge $MaxMatches) { Write-Warning 'Match limit reached; results may be truncated.'; return }
                 }
             }
-        } finally { $reader.Dispose() }
+        } finally {
+            if ($null -ne $reader) { $reader.Dispose() } else { $stream.Dispose() }
+        }
     }
 }
 

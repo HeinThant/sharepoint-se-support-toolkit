@@ -1,5 +1,16 @@
 # QA and acceptance
 
+## Initial QA record — 2026-09-13
+
+- 34 tests passed locally on Windows PowerShell 5.1.26100.9444 and PowerShell 7.6.5.
+- GitHub hosted tests passed after correcting workflow shell validation and the test runner's handling of expected nonzero CLI exit codes.
+- GitHub's Codex reviewer identified a P2 issue opening active ULS files. The reader now uses read/write/delete sharing; a regression test holds a writer open and verifies the reader releases its handle.
+- The formal Copilot reviewer request did not register a reviewer. The completed AI review was provided by `chatgpt-codex-connector`, not Copilot.
+- HTML structure, escaping and report data were checked automatically. Browser visual inspection was blocked by the local-file URL policy and remains outstanding.
+- No SharePoint farm is installed in the test environment. Real-farm acceptance below remains outstanding.
+
+See [PR #1](https://github.com/HeinThant/sharepoint-se-support-toolkit/pull/1) for the review and current checks.
+
 ## Automated checks
 
 Run `tests/Run-Tests.ps1` in PowerShell 5.1 and 7. Tests need no farm or external packages. The partial-collection integration test substitutes SharePoint commands within module scope on 5.1; PowerShell 7 verifies the live-runtime rejection instead.

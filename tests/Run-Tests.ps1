@@ -146,6 +146,14 @@ try {
         $matches = @(Find-SECorrelation -Path @($log, $log) -CorrelationId $id -MaxMatches 2 -WarningAction SilentlyContinue)
         Assert-True ($matches.Count -eq 2)
     }
+    Test-Case 'ULS search supports an active writer and releases its read handle' {
+        $writer = [IO.File]::Open($log, [IO.FileMode]::Open, [IO.FileAccess]::Write, [IO.FileShare]::ReadWrite)
+        try {
+            Assert-True (@(Find-SECorrelation -Path $log -CorrelationId $id).Count -eq 3)
+        } finally { $writer.Dispose() }
+        $exclusive = [IO.File]::Open($log, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::None)
+        $exclusive.Dispose()
+    }
     Test-Case 'ULS missing correlation returns zero results' {
         Assert-True (@(Find-SECorrelation -Path $log -CorrelationId ([guid]::NewGuid())).Count -eq 0)
     }
