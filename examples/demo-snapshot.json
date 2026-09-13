@@ -1,0 +1,15 @@
+{
+  "SchemaVersion": "1.0",
+  "CapturedAtUtc": "2026-09-13T00:00:00Z",
+  "Source": "Demo",
+  "Farm": { "BuildVersion": "16.0.10000.10000", "NeedsUpgrade": true },
+  "Servers": [
+    { "Name": "SP-WEB-01.example.invalid", "Role": "WebFrontEnd", "Status": "Online", "NeedsUpgrade": false },
+    { "Name": "SP-APP-01.example.invalid", "Role": "Application", "Status": "Online", "NeedsUpgrade": true }
+  ],
+  "Databases": [
+    { "Name": "WSS_Content_Demo", "Status": "Online", "NeedsUpgrade": false },
+    { "Name": "WSS_Content_Archive", "Status": "Disabled", "NeedsUpgrade": false }
+  ],
+  "CollectionErrors": []
+}
